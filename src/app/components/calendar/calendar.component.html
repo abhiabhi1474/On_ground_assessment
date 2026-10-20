@@ -1,0 +1,203 @@
+<div class="sc active" id="asc-calendar">
+
+  <div class="cal-card">
+    <div class="cal-topbar">
+      <div class="cal-title-row">
+        <i class="ti ti-calendar cal-header-icon"></i>
+        <span class="cal-month-title">{{ currentMonthLabel() }}</span>
+      </div>
+
+      <div class="cal-nav-buttons">
+        <button
+          (click)="jumpToToday()"
+          class="cal-today-btn"
+          type="button"
+        >
+          Today
+        </button>
+        <button
+          (click)="prevMonth()"
+          class="cal-arrow-btn"
+          title="Previous Month"
+          type="button"
+        >
+          ‹
+        </button>
+        <button
+          (click)="nextMonth()"
+          class="cal-arrow-btn"
+          title="Next Month"
+          type="button"
+        >
+          ›
+        </button>
+      </div>
+    </div>
+
+    <div class="weekdays-grid">
+      <span *ngFor="let wd of weekdays" class="weekday-lbl">
+        {{ wd }}
+      </span>
+    </div>
+
+    <div class="days-grid">
+      <div
+        *ngFor="let cell of gridCells()"
+        (click)="selectCell(cell)"
+        [class.selected]="isSelected(cell)"
+        [class.today]="cell.isToday"
+        [class.other-month]="!cell.isCurrentMonth"
+        class="day-cell"
+      >
+        <span class="day-number">{{ cell.dayNum }}</span>
+
+        <div *ngIf="cell.hasEvent" class="day-dots-row">
+          <span
+            *ngFor="let dot of [].constructor(cell.eventsCount)"
+            class="day-dot"
+          ></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="cal-card schedule-panel">
+    <div class="schedule-header">
+      <div>
+        <div class="schedule-title">
+          Schedule for {{ formatSelectedDate() }}
+        </div>
+        <div class="schedule-subtitle">
+          {{ selectedEvents().length }} appointment{{ selectedEvents().length === 1 ? '' : 's' }} / callbacks
+        </div>
+      </div>
+
+      <button
+        (click)="openAddModal()"
+        class="add-schedule-btn"
+        type="button"
+        id="btnOpenAddSchedule"
+      >
+        <i class="ti ti-plus"></i>
+        <span>Add Schedule</span>
+      </button>
+    </div>
+
+    <div *ngIf="selectedEvents().length === 0" class="no-events-state">
+      <i class="ti ti-calendar-event" style="font-size:32px;color:#d1d5db;margin-bottom:6px"></i>
+      <div>No appointments or callbacks scheduled for this date.</div>
+      <button (click)="openAddModal()" class="schedule-prompt-link">+ Schedule for this date</button>
+    </div>
+
+    <div *ngIf="selectedEvents().length > 0" class="events-list">
+      <div
+        *ngFor="let ev of selectedEvents()"
+        class="event-card"
+        [class.confirmed]="ev.status === 'confirmed'"
+        [class.pending]="ev.status === 'pending'"
+      >
+        <div class="event-body">
+          <div class="event-title-row">
+            <span class="event-name">{{ ev.title }}</span>
+            <span class="event-time-badge">{{ ev.time }}</span>
+          </div>
+          <div class="event-contact">
+            Contact: <b>{{ ev.contactName }}</b> · {{ ev.phone }}
+          </div>
+          <div *ngIf="ev.notes" class="event-notes">
+            "{{ ev.notes }}"
+          </div>
+        </div>
+
+        <div class="event-right">
+          <span
+            class="event-status-badge"
+            [class.status-confirmed]="ev.status === 'confirmed'"
+            [class.status-pending]="ev.status === 'pending'"
+          >
+            {{ ev.status }}
+          </span>
+          <button class="event-call-btn" (click)="callContact(ev)" title="Call {{ ev.contactName }}">
+            <i class="ti ti-phone"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="isAddEventOpen"
+    class="ios-overlay add-schedule-overlay"
+    (click)="isAddEventOpen = false"
+  >
+    <div class="modal-dialog-card" (click)="$event.stopPropagation()">
+      <div class="modal-dialog-header">
+        <div class="mdh-title-row">
+          <i class="ti ti-calendar-plus" style="font-size:20px;color:#c8860a"></i>
+          <span class="mdh-title">Add Schedule / Callback</span>
+        </div>
+        <button (click)="isAddEventOpen = false" class="mdh-close-btn" type="button">✕</button>
+      </div>
+
+      <div class="modal-form-body">
+        <div class="form-group">
+          <label class="form-label">Date</label>
+          <div class="form-static-date">{{ formatSelectedDate() }}</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Contact Name *</label>
+          <input
+            [(ngModel)]="newEventName"
+            placeholder="e.g. Vikram Mehta"
+            class="form-input"
+            autofocus
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <input
+            [(ngModel)]="newEventPhone"
+            placeholder="+91 98450 xxxxx"
+            class="form-input"
+          />
+        </div>
+
+        <div class="form-row-2">
+          <div class="form-group">
+            <label class="form-label">Time</label>
+            <input
+              [(ngModel)]="newEventTime"
+              placeholder="e.g. 4:30 PM"
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Type</label>
+            <select [(ngModel)]="newEventType" class="form-input">
+              <option value="callback">Callback</option>
+              <option value="visit">Store Visit</option>
+              <option value="demo">Firmness Demo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Callback Purpose / Notes</label>
+          <textarea
+            [(ngModel)]="newEventNotes"
+            rows="2"
+            placeholder="e.g. Discuss 12m zero-cost EMI & SmartGRID Luxe 10-inch"
+            class="form-input"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="modal-dialog-footer">
+        <button (click)="isAddEventOpen = false" class="modal-btn-cancel" type="button">Cancel</button>
+        <button (click)="saveNewEvent()" class="modal-btn-save" type="button">Save Schedule</button>
+      </div>
+    </div>
+  </div>
+</div>

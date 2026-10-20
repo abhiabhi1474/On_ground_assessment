@@ -1,0 +1,54 @@
+<div
+  *ngIf="svc.isDateRangeModalOpen()"
+  class="ios-overlay"
+  (click)="svc.isDateRangeModalOpen.set(false)"
+>
+  <div class="modal-dialog-card date-dialog-card" (click)="$event.stopPropagation()">
+
+    <div class="dr-header">
+      <div class="dr-header-left">
+        <i class="ti ti-calendar-stats" style="font-size:22px;color:#185fa5"></i>
+        <div>
+          <div class="dr-title">Filter Date Range</div>
+          <div class="dr-sub">Select performance review timeframe</div>
+        </div>
+      </div>
+      <button (click)="svc.isDateRangeModalOpen.set(false)" class="dr-close-btn" type="button">✕</button>
+    </div>
+
+    <div class="dr-body">
+      <div class="preset-label">Quick Presets</div>
+      <div class="preset-grid">
+        <button
+          *ngFor="let p of presets"
+          (click)="selectPreset(p)"
+          [class.active]="svc.dateFilterLabel() === p"
+          class="preset-btn"
+          type="button"
+        >
+          <i class="ti ti-check" *ngIf="svc.dateFilterLabel() === p"></i>
+          <span>{{ p }}</span>
+        </button>
+      </div>
+
+      <div class="custom-dates-section">
+        <div class="preset-label">Custom Date Range</div>
+        <div class="custom-inputs-row">
+          <div class="date-input-group">
+            <label class="dil-lbl">From</label>
+            <input [(ngModel)]="fromDate" type="date" class="dil-input" />
+          </div>
+          <div class="date-input-group">
+            <label class="dil-lbl">To</label>
+            <input [(ngModel)]="toDate" type="date" class="dil-input" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dr-footer">
+      <button (click)="svc.isDateRangeModalOpen.set(false)" class="dr-cancel-btn" type="button">Cancel</button>
+      <button (click)="applyCustomRange()" class="dr-apply-btn" type="button">Apply Filter</button>
+    </div>
+  </div>
+</div>

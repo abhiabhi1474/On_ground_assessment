@@ -1,0 +1,484 @@
+:host {
+  display: block;
+}
+
+.active-call-card {
+  background: #0f172a;
+  color: #fff;
+  border-radius: 24px;
+  width: 95%;
+  max-width: 520px;
+  max-height: 92vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65);
+  border: 1.5px solid #1e293b;
+}
+
+.call-card-header {
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.call-header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.call-contact-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.call-avatar-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #0d2e26, #1d9e75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  border: 2px solid rgba(93, 202, 165, 0.4);
+}
+
+.call-name-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.call-contact-name {
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.call-live-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+.call-live-badge.connected {
+  background: #065f46;
+  color: #6ee7b7;
+}
+
+.call-live-badge.ringing {
+  background: #7c2d12;
+  color: #fed7aa;
+}
+
+.call-contact-meta {
+  font-size: 13px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.call-timer-box {
+  text-align: right;
+}
+
+.call-time-val {
+  font-size: 22px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #38bdf8;
+}
+
+.call-mode-lbl {
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.call-mode-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 4px 6px;
+  border-radius: 12px;
+}
+
+.mode-toggles {
+  display: flex;
+  gap: 4px;
+}
+
+.mode-btn {
+  border: none;
+  padding: 5px 10px;
+  border-radius: 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  background: transparent;
+  color: #94a3b8;
+  transition: all 0.15s;
+}
+
+.mode-btn.ai.active {
+  background: #2563eb;
+  color: #fff;
+}
+
+.mode-btn.human.active {
+  background: #0d9488;
+  color: #fff;
+}
+
+.rec-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  color: #ef4444;
+  font-weight: 700;
+  padding-right: 6px;
+}
+
+.rec-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #ef4444;
+  display: inline-block;
+  animation: notifDotBlink 1.2s infinite;
+}
+
+.waveform-container {
+  margin-top: 10px;
+}
+
+.waveform-canvas {
+  width: 100%;
+  height: 64px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 12px;
+  display: block;
+}
+
+.call-card-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #0b1120;
+}
+
+.sentiment-meter-card {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sentiment-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 6px;
+}
+
+.sentiment-lbl {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+}
+
+.sentiment-val {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.sentiment-val.pos { color: #34d399; }
+.sentiment-val.obj { color: #f87171; }
+.sentiment-val.neu { color: #fbbf24; }
+
+.sentiment-track {
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.sentiment-bar {
+  height: 100%;
+  transition: width 0.4s ease;
+}
+
+.sentiment-bar.bg-pos { background: #10b981; }
+.sentiment-bar.bg-obj { background: #ef4444; }
+.sentiment-bar.bg-neu { background: #f59e0b; }
+
+.coach-bubble-card {
+  background: linear-gradient(135deg, #312e81, #4338ca);
+  border-radius: 12px;
+  padding: 10px 14px;
+  border: 1px solid #6366f1;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.coach-icon {
+  font-size: 18px;
+}
+
+.coach-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: #a5b4fc;
+  text-transform: uppercase;
+}
+
+.coach-tip {
+  font-size: 13px;
+  color: #fff;
+  margin-top: 2px;
+  line-height: 1.35;
+}
+
+.transcript-stream {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.transcript-turn {
+  max-width: 85%;
+  display: flex;
+  flex-direction: column;
+}
+
+.transcript-turn.speaker-agent {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+
+.transcript-turn.speaker-customer {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+.turn-speaker-label {
+  font-size: 11px;
+  color: #64748b;
+  margin-bottom: 2px;
+}
+
+.turn-bubble {
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+.transcript-turn.speaker-agent .turn-bubble {
+  background: #0f766e;
+  color: #fff;
+  border: 1px solid #14b8a6;
+  border-bottom-right-radius: 2px;
+}
+
+.transcript-turn.speaker-customer .turn-bubble {
+  background: #1e293b;
+  color: #f1f5f9;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom-left-radius: 2px;
+}
+
+.suggested-responses-card {
+  margin-top: 8px;
+}
+
+.sugg-header {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.sugg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.sugg-btn {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 8px 12px;
+  color: #38bdf8;
+  font-size: 13px;
+  text-align: left;
+  cursor: pointer;
+  line-height: 1.35;
+  transition: all 0.15s;
+}
+
+.sugg-btn:hover {
+  background: #334155;
+  border-color: #38bdf8;
+}
+
+.custom-reply-row {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.custom-reply-input {
+  flex: 1;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 8px 12px;
+  color: #fff;
+  font-size: 13px;
+  outline: none;
+}
+
+.custom-reply-btn {
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: #0d9488;
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.sop-scorecard-card {
+  background: #1e293b;
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sop-scorecard-header {
+  font-size: 12px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.sop-checklist-items {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sop-check-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.sop-item-lbl {
+  font-size: 12.5px;
+  color: #94a3b8;
+}
+
+.sop-item-lbl.passed {
+  color: #34d399;
+  text-decoration: line-through;
+}
+
+.sop-item-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.sop-item-badge.badge-passed {
+  background: #065f46;
+  color: #6ee7b7;
+}
+
+.sop-item-badge.badge-pending {
+  background: rgba(255, 255, 255, 0.08);
+  color: #64748b;
+}
+
+.keypad-card {
+  background: #1e293b;
+  border-radius: 14px;
+  padding: 12px;
+  margin-top: 6px;
+}
+
+.keypad-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  max-width: 240px;
+  margin: 0 auto;
+}
+
+.keypad-digit-btn {
+  height: 44px;
+  border-radius: 10px;
+  background: #334155;
+  border: 1px solid #475569;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.call-card-footer {
+  background: #0f172a;
+  padding: 14px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-shrink: 0;
+}
+
+.ctrl-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1e293b;
+  transition: all 0.15s;
+}
+
+.ctrl-btn.active-mute { background: #ef4444; }
+.ctrl-btn.active-hold { background: #f59e0b; }
+.ctrl-btn.active-keypad { background: #3b82f6; }
+
+.ctrl-btn.hangup {
+  width: 58px;
+  height: 58px;
+  background: #ef4444;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.45);
+  font-size: 24px;
+}

@@ -1,0 +1,34 @@
+<div class="app-container">
+
+  <app-sidebar></app-sidebar>
+
+  <div class="screen">
+
+    <app-topbar></app-topbar>
+
+    <main class="content">
+
+      <app-dashboard *ngIf="svc.currentTab() === 'dash'"></app-dashboard>
+
+      <app-planner *ngIf="svc.currentTab() === 'calls'"></app-planner>
+
+      <app-calendar *ngIf="svc.currentTab() === 'calendar'"></app-calendar>
+
+      <app-pulse *ngIf="svc.currentTab() === 'pulse'"></app-pulse>
+    </main>
+  </div>
+
+  <app-leads-modal></app-leads-modal>
+
+  <app-calling-modal></app-calling-modal>
+
+  <app-wrapup-modal></app-wrapup-modal>
+
+  <app-call-review-modal></app-call-review-modal>
+
+  <app-notifications-modal></app-notifications-modal>
+
+  <app-score-detail-modal></app-score-detail-modal>
+
+  <app-date-range-modal></app-date-range-modal>
+</div>

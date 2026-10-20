@@ -1,0 +1,85 @@
+<nav class="ios-nav">
+
+  <button
+    class="ios-nav-item nav-dash"
+    data-tab="dash"
+    [class.active]="svc.currentTab() === 'dash'"
+    (click)="svc.switchTab('dash')"
+    title="Dashboard Overview"
+  >
+    <i class="ti ti-layout-dashboard in-icon"></i>
+    <span class="in-label" id="navLabelDash">Dashboard</span>
+  </button>
+
+  <button
+    class="ios-nav-item nav-calls"
+    data-tab="calls"
+    [class.active]="svc.currentTab() === 'calls'"
+    (click)="svc.switchTab('calls')"
+    title="Today's Calling Plan"
+  >
+    <i class="ti ti-phone in-icon"></i>
+    <span class="in-label">Plan</span>
+  </button>
+
+  <div class="ios-nav-sub" id="planNavSub" *ngIf="svc.currentTab() === 'calls'">
+    <button
+      class="ios-nav-sub-item"
+      id="plannav-outgoing"
+      [class.active]="svc.planSubTab() === 'outgoing'"
+      (click)="svc.switchPlanSubTab('outgoing')"
+    >
+      <i class="ti ti-phone-outgoing"></i>
+      <span>Calls to make</span>
+    </button>
+    <button
+      class="ios-nav-sub-item"
+      id="plannav-incoming"
+      [class.active]="svc.planSubTab() === 'incoming'"
+      (click)="svc.switchPlanSubTab('incoming')"
+    >
+      <i class="ti ti-phone-incoming"></i>
+      <span>Incoming</span>
+    </button>
+    <button
+      class="ios-nav-sub-item"
+      id="plannav-recent"
+      [class.active]="svc.planSubTab() === 'recent'"
+      (click)="svc.switchPlanSubTab('recent')"
+    >
+      <i class="ti ti-history"></i>
+      <span>Recent</span>
+    </button>
+    <button
+      class="ios-nav-sub-item"
+      id="plannav-practise"
+      (click)="svc.simulateIncomingCall()"
+      title="Simulate incoming roleplay / practice call"
+    >
+      <i class="ti ti-phone-ringing"></i>
+      <span>Practise a call</span>
+    </button>
+  </div>
+
+  <button
+    class="ios-nav-item nav-calendar"
+    data-tab="calendar"
+    [class.active]="svc.currentTab() === 'calendar'"
+    (click)="svc.switchTab('calendar')"
+    title="Shift & Visit Calendar"
+  >
+    <i class="ti ti-calendar in-icon"></i>
+    <span class="in-label" id="navLabelCalendar">Calendar</span>
+  </button>
+
+  <button
+    class="ios-nav-item nav-pulse"
+    data-tab="pulse"
+    [class.active]="svc.currentTab() === 'pulse'"
+    (click)="svc.switchTab('pulse')"
+    title="AvaniBot & Store Pulse"
+  >
+    <i class="ti ti-messages in-icon"></i>
+    <span class="in-label">Pulse</span>
+  </button>
+</nav>

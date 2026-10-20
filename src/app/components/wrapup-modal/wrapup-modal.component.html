@@ -1,0 +1,80 @@
+<div
+  *ngIf="svc.isWrapupModalOpen()"
+  class="ios-overlay wrapup-overlay"
+  (click)="svc.isWrapupModalOpen.set(false)"
+>
+  <div class="wrapup-modal-card" (click)="$event.stopPropagation()">
+
+    <div class="wrapup-header">
+      <div class="wrapup-eyebrow">
+        Post-Call Wrap-up & Disposition
+      </div>
+      <div class="wrapup-name">
+        {{ svc.wrapupData()?.name }}
+      </div>
+      <div class="wrapup-meta">
+        Duration: <b>{{ svc.wrapupData()?.duration }}</b> · SOP Score:
+        <b>{{ svc.wrapupData()?.sopScore }}%</b>
+      </div>
+    </div>
+
+    <div class="wrapup-body">
+
+      <div class="disposition-section">
+        <label class="wrapup-label">
+          Call Outcome
+        </label>
+        <div class="outcomes-grid">
+          <button
+            *ngFor="let opt of outcomes"
+            (click)="selectedOutcome = opt"
+            [class.selected]="selectedOutcome === opt"
+            class="outcome-btn"
+            type="button"
+          >
+            {{ opt }}
+          </button>
+        </div>
+      </div>
+
+      <div class="notes-section">
+        <label class="wrapup-label">
+          Call Summary & Next Actions
+        </label>
+        <textarea
+          [(ngModel)]="wrapupNotes"
+          rows="3"
+          placeholder="e.g. Addressed price comparison against Wakefit. Customer visiting Koramangala store today at 6 PM for firmness test."
+          class="wrapup-textarea"
+        ></textarea>
+      </div>
+
+      <div
+        *ngIf="(svc.wrapupData()?.sopScore || 0) >= 85"
+        class="incentive-toast"
+      >
+        <span class="incentive-icon">🎉</span>
+        <div class="incentive-text">
+          <b>₹150 Coached Move Incentive Unlocked!</b> SOP adherence passed above 85%.
+        </div>
+      </div>
+
+      <div class="wrapup-footer-buttons">
+        <button
+          (click)="svc.isWrapupModalOpen.set(false)"
+          class="wrapup-cancel-btn"
+          type="button"
+        >
+          Cancel
+        </button>
+        <button
+          (click)="submitWrapup()"
+          class="wrapup-save-btn"
+          type="button"
+        >
+          Save to Recent & Close
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

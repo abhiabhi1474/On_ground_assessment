@@ -1,0 +1,70 @@
+<div
+  *ngIf="svc.isReviewModalOpen() && svc.reviewCallData()"
+  class="ios-overlay"
+  (click)="svc.closeCallReview()"
+>
+  <div class="modal-dialog-card call-review-card" (click)="$event.stopPropagation()">
+
+    <div class="cr-header">
+      <div>
+        <div class="cr-eyebrow">Call Review vs SOP Standards</div>
+        <div class="cr-title">{{ svc.reviewCallData()?.name }}</div>
+        <div class="cr-sub">
+          {{ svc.reviewCallData()?.timestamp }} · Duration: {{ svc.reviewCallData()?.duration }}
+        </div>
+      </div>
+      <button class="cr-close-btn" (click)="svc.closeCallReview()" type="button" title="Close">✕</button>
+    </div>
+
+    <div class="cr-body">
+
+      <div class="sop-score-card">
+        <div>
+          <div class="ssc-label">SOP Adherence Score</div>
+          <div class="ssc-value">{{ svc.reviewCallData()?.sopScore }}%</div>
+        </div>
+        <div class="ssc-grade">
+          <span class="ssc-badge" [class.excellent]="(svc.reviewCallData()?.sopScore || 0) >= 90">
+            {{ (svc.reviewCallData()?.sopScore || 0) >= 90 ? 'Grade A · Excellent' : 'Grade B · Coached' }}
+          </span>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-label">
+          <i class="ti ti-sparkles" style="color:#0f766e"></i>
+          <span>AI Generated Call Summary</span>
+        </div>
+        <div class="summary-text">{{ svc.reviewCallData()?.summary }}</div>
+      </div>
+
+      <div class="checklist-card">
+        <div class="checklist-header">Checklist Items & Evidence</div>
+        <div class="checklist-items">
+          <div
+            *ngFor="let res of svc.reviewCallData()?.sopResults"
+            class="chk-item"
+            [class.passed]="res.passed"
+            [class.missed]="!res.passed"
+          >
+            <div class="chk-item-top">
+              <span class="chk-label">{{ res.label }}</span>
+              <span class="chk-status" [class.status-pass]="res.passed" [class.status-miss]="!res.passed">
+                {{ res.passed ? 'PASSED ✓' : 'MISSED ✗' }}
+              </span>
+            </div>
+            <div class="chk-evidence">
+              Evidence: {{ res.scriptHint }}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cr-footer">
+      <button class="cr-btn-done" (click)="svc.closeCallReview()" type="button">
+        Done Reviewing
+      </button>
+    </div>
+  </div>
+</div>

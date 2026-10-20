@@ -1,0 +1,269 @@
+<div class="sc active" id="asc-calls">
+
+  <div class="planner-header">
+    <div class="ph-left">
+      <div class="cc-greeting">Today's calling plan</div>
+      <div class="cc-name" style="font-size:17px">Planner</div>
+    </div>
+    <div class="ph-right">
+      <div id="planDateLabel" class="plan-date-badge">
+        Mon, 19 Oct 2026
+      </div>
+    </div>
+  </div>
+
+  <div
+    *ngIf="svc.isIncomingCallAlertOpen()"
+    id="dialerIncomingCall"
+    class="incoming-alert-card incoming-pulse"
+  >
+    <div class="inc-eyebrow">
+      Incoming Call · ₹32,000 at stake
+    </div>
+    <div class="inc-name" id="dialerIncomingName">Ritu S.</div>
+    <div class="inc-sub" id="dialerIncomingSub">
+      🎯 Intent 96 · calling from +91 98450 78219
+    </div>
+    <div class="inc-actions">
+      <button
+        (click)="svc.dismissIncomingCall()"
+        title="Decline Call"
+        class="inc-btn decline"
+      >
+        <i class="ti ti-phone-x"></i>
+      </button>
+      <button
+        (click)="acceptIncomingCall()"
+        title="Accept Call"
+        class="inc-btn accept"
+      >
+        <i class="ti ti-phone"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="plan-subnav">
+    <button
+      (click)="svc.switchPlanSubTab('outgoing')"
+      [class.active]="svc.planSubTab() === 'outgoing'"
+      class="subnav-btn outgoing"
+    >
+      <i class="ti ti-phone-outgoing"></i>
+      <span>Calls to make ({{ svc.leads().length }})</span>
+    </button>
+
+    <button
+      (click)="svc.switchPlanSubTab('incoming')"
+      [class.active]="svc.planSubTab() === 'incoming'"
+      class="subnav-btn incoming"
+    >
+      <i class="ti ti-phone-incoming"></i>
+      <span>Incoming ({{ svc.incomingCalls().length }})</span>
+    </button>
+
+    <button
+      (click)="svc.switchPlanSubTab('recent')"
+      [class.active]="svc.planSubTab() === 'recent'"
+      class="subnav-btn recent"
+    >
+      <i class="ti ti-history"></i>
+      <span>Recent ({{ svc.recentCalls().length }})</span>
+    </button>
+  </div>
+
+  <div *ngIf="svc.planSubTab() === 'outgoing'" class="subtab-panel">
+    <div class="panel-header-row">
+      <span class="panel-header-title">Leads ranked by score</span>
+      <button class="open-leads-link" (click)="svc.openLeadsModal(0)">Open Leads Card Modal →</button>
+    </div>
+
+    <div class="leads-list">
+      <div
+        *ngFor="let lead of pagedLeads(); let i = index"
+        class="lead-card-row"
+      >
+
+        <div
+          (click)="svc.toggleLeadExpand(lead.id)"
+          class="lead-row-header"
+        >
+          <div class="lead-avatar-info">
+            <div class="lead-avatar-circle">
+              {{ lead.name.slice(0, 2).toUpperCase() }}
+            </div>
+            <div>
+              <div class="lead-name-tags">
+                <span class="l-name">{{ lead.name }}</span>
+                <span class="tag-icp">ICP {{ lead.icpScore }}%</span>
+                <span class="tag-intent">Intent {{ lead.intentScore }}%</span>
+              </div>
+              <div class="lead-sub-meta">
+                {{ lead.phone }} · {{ lead.store }}
+              </div>
+            </div>
+          </div>
+
+          <div class="lead-value-arrow">
+            <span class="lead-val-text">₹{{ lead.value | number }}</span>
+            <i
+              class="ti ti-chevron-down"
+              [style.transform]="lead.expanded ? 'rotate(180deg)' : 'rotate(0deg)'"
+            ></i>
+          </div>
+        </div>
+
+        <div *ngIf="lead.expanded" class="lead-expanded-body">
+
+          <div class="signals-box">
+            <div class="signals-label">Buying Signals & Objections</div>
+            <div class="signals-list">
+              <div
+                *ngFor="let b of lead.problemBuckets"
+                class="signal-item"
+              >
+                <span class="sig-cat">{{ b.cat }}: </span>
+                <span class="sig-text">{{ b.text }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="journey-box">
+            <div class="journey-label">Recent Touchpoint</div>
+            <div class="journey-snippet">
+              💬 {{ lead.journey[0]?.text || 'Requested quotation on WhatsApp' }}
+            </div>
+          </div>
+
+          <div class="lead-actions-row">
+            <button
+              (click)="placeCall(lead.name, lead.phone, lead.value)"
+              class="lead-action-btn call"
+            >
+              <i class="ti ti-phone"></i>
+              <span>Call Now</span>
+            </button>
+            <button
+              (click)="openWhatsApp(lead)"
+              class="lead-action-btn wa"
+            >
+              <i class="ti ti-brand-whatsapp"></i>
+              <span>WhatsApp</span>
+            </button>
+            <button
+              (click)="svc.openLeadsModal(outgoingPage() * pageSize + i)"
+              class="lead-action-btn details"
+              title="Inspect detailed lead breakdown"
+            >
+              Details
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="pagination-bar">
+      <button
+        (click)="prevOutgoingPage()"
+        [disabled]="outgoingPage() === 0"
+        class="page-arrow-btn"
+      >
+        <i class="ti ti-chevron-left"></i>
+      </button>
+      <span class="page-info-text">
+        Page {{ outgoingPage() + 1 }} of {{ totalPages() }}
+      </span>
+      <button
+        (click)="nextOutgoingPage()"
+        [disabled]="outgoingPage() >= totalPages() - 1"
+        class="page-arrow-btn"
+      >
+        <i class="ti ti-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="svc.planSubTab() === 'incoming'" class="subtab-panel">
+    <div class="panel-header-row">
+      <span class="panel-header-title">Missed calls with value at stake</span>
+      <button
+        (click)="svc.triggerIncomingCallSimulation()"
+        class="test-incoming-btn"
+      >
+        + Test Incoming Call
+      </button>
+    </div>
+
+    <div class="incoming-list">
+      <div
+        *ngFor="let inc of svc.incomingCalls()"
+        class="incoming-item-card"
+      >
+        <div class="incoming-left">
+          <div class="inc-icon-circle">
+            <i class="ti ti-phone-incoming"></i>
+          </div>
+          <div class="inc-text">
+            <div class="inc-name-row">
+              <span class="inc-caller-name">{{ inc.name }}</span>
+              <span class="inc-badge-time">{{ inc.timeAgo }}</span>
+            </div>
+            <div class="inc-caller-reason">{{ inc.reason }}</div>
+            <div class="inc-caller-stake">
+              Value at stake: ₹{{ inc.value | number }} · Intent {{ inc.intent }}%
+            </div>
+          </div>
+        </div>
+
+        <button
+          (click)="callBack(inc)"
+          class="callback-btn"
+        >
+          <i class="ti ti-phone-call"></i>
+          <span>Call Back</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="svc.planSubTab() === 'recent'" class="subtab-panel">
+    <div class="panel-header-row">
+      <span class="panel-header-title">Calls by type, time and length · Tap a call to review it</span>
+    </div>
+
+    <div class="recent-list">
+      <div
+        *ngFor="let rc of svc.recentCalls()"
+        (click)="svc.openCallReview(rc)"
+        class="recent-call-item"
+      >
+        <div class="recent-left">
+          <div
+            class="recent-type-icon"
+            [class.outgoing]="rc.type === 'outgoing'"
+            [class.incoming]="rc.type === 'incoming'"
+          >
+            <i [class]="rc.type === 'outgoing' ? 'ti ti-phone-outgoing' : 'ti ti-phone-incoming'"></i>
+          </div>
+          <div>
+            <div class="recent-name">{{ rc.name }}</div>
+            <div class="recent-meta">
+              {{ rc.timestamp }} · Duration: <b>{{ rc.duration }}</b>
+            </div>
+          </div>
+        </div>
+
+        <div class="recent-right">
+          <span
+            class="recent-sop-score"
+            [class.sop-high]="rc.sopScore >= 90"
+            [class.sop-med]="rc.sopScore >= 80 && rc.sopScore < 90"
+            [class.sop-low]="rc.sopScore < 80"
+          >
+            SOP {{ rc.sopScore }}%
+          </span>
+          <span class="recent-review-link">Review →</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

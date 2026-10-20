@@ -1,0 +1,326 @@
+<div class="sc active" id="asc-pulse">
+
+  <div *ngIf="!svc.isPulseChannelView()" class="pulse-home-view">
+
+    <div class="pulse-header">
+      <div class="pulse-header-top">
+        <div class="pulse-title-row">
+          <i class="ti ti-messages pulse-icon"></i>
+          <span class="pulse-title">Pulse</span>
+        </div>
+        <div class="pulse-store-badge">
+          Koramangala Team & AI
+        </div>
+      </div>
+
+      <div class="pulse-tabs-bar">
+        <button
+          (click)="pulseTab = 'channels'"
+          [class.active]="pulseTab === 'channels'"
+          class="pulse-tab-pill"
+          type="button"
+        >
+          <i class="ti ti-messages"></i>
+          <span>Channels & Agents</span>
+        </button>
+        <button
+          (click)="pulseTab = 'kudos'"
+          [class.active]="pulseTab === 'kudos'"
+          class="pulse-tab-pill"
+          type="button"
+        >
+          <span>🏆</span>
+          <span>Kudos & Wins ({{ svc.kudosList().length }})</span>
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="pulseTab === 'channels'" class="pulse-content-container">
+
+      <div class="avani-hero-card">
+        <div class="avani-header-row">
+          <div class="avani-avatar-circle">
+            🤖
+          </div>
+          <div class="avani-info">
+            <div class="avani-name-badge">
+              <span class="avani-name">AvaniBot</span>
+              <span class="avani-status-tag">AI Active</span>
+            </div>
+            <div class="avani-desc">
+              Omni AI Coach · Real-time pitch suggestions & objection defense
+            </div>
+          </div>
+        </div>
+
+        <div class="avani-prompts-row">
+          <button
+            (click)="askAvani('daily-brief')"
+            class="avani-prompt-chip"
+            type="button"
+          >
+            📋 Daily Briefing
+          </button>
+          <button
+            (click)="askAvani('objections')"
+            class="avani-prompt-chip"
+            type="button"
+          >
+            💡 Pitch Objections
+          </button>
+          <button
+            (click)="askAvani('emi-rules')"
+            class="avani-prompt-chip"
+            type="button"
+          >
+            💳 Zero EMI Rules
+          </button>
+        </div>
+      </div>
+
+      <div class="section-eyebrow">
+        Role and Task Agents
+      </div>
+      <div class="agent-grid-responsive">
+        <div
+          *ngFor="let ag of svc.staffAgents()"
+          (click)="openAgentChannel(ag)"
+          class="agent-card"
+        >
+          <div class="agent-card-top">
+            <span class="agent-icon">{{ ag.icon }}</span>
+            <div>
+              <div class="agent-name">{{ ag.name }}</div>
+              <div class="agent-role">{{ ag.role }}</div>
+            </div>
+          </div>
+          <div class="agent-description">
+            {{ ag.description }}
+          </div>
+          <span class="agent-chat-link">Open chat →</span>
+        </div>
+      </div>
+
+      <div class="section-eyebrow">
+        Channels
+      </div>
+      <div class="channels-list">
+        <div
+          *ngFor="let ch of svc.pulseChannels()"
+          (click)="svc.selectChannel(ch.slug)"
+          class="channel-item-card"
+        >
+          <div class="channel-info-left">
+            <div class="channel-icon-box">
+              {{ ch.icon }}
+            </div>
+            <div>
+              <div class="channel-name-row">
+                <span class="channel-name">#{{ ch.name }}</span>
+                <span *ngIf="ch.hasMention" class="mention-dot" title="Needs input"></span>
+              </div>
+              <div class="channel-desc">{{ ch.description }}</div>
+            </div>
+          </div>
+
+          <span *ngIf="ch.unreadCount > 0" class="unread-pill">
+            {{ ch.unreadCount }}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="pulseTab === 'kudos'" class="pulse-content-container">
+      <div class="kudos-header-row">
+        <span class="section-eyebrow">Recognition Wall · +₹Coached Bonus Points</span>
+        <button (click)="isGiveKudosOpen = true" class="give-kudos-btn" type="button">
+          + Give Kudos
+        </button>
+      </div>
+      <div class="kudos-list">
+        <div
+          *ngFor="let k of svc.kudosList()"
+          class="kudos-card"
+        >
+          <div class="kudos-top">
+            <span class="kudos-badge">{{ k.badge }}</span>
+            <span class="kudos-points">+{{ k.points }} pts</span>
+          </div>
+          <div class="kudos-participants">
+            {{ k.fromName }} ➔ {{ k.toName }}
+          </div>
+          <div class="kudos-quote">
+            "{{ k.text }}"
+          </div>
+          <div class="kudos-time">{{ k.time }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="svc.isPulseChannelView()" class="channel-chat-container">
+
+    <div class="chat-header">
+      <button
+        (click)="svc.closeChannelView()"
+        class="chat-back-btn"
+        type="button"
+      >
+        <i class="ti ti-chevron-left"></i>
+        <span>Back</span>
+      </button>
+      <div class="chat-header-info">
+        <div class="chat-title">
+          #{{ activeChannel()?.name || svc.activeChannelSlug() }}
+        </div>
+        <div class="chat-sub">
+          {{ activeChannel()?.description || 'AI Coached discussion thread' }}
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="pendingTask()" class="pinned-task-banner">
+      <div class="pinned-eyebrow">
+        <i class="ti ti-pin" style="color:#b45309"></i>
+        <span class="pinned-title">Needs your input</span>
+        <span class="pinned-count-tag">1</span>
+        <span class="pinned-time">{{ pendingTask()?.time }}</span>
+      </div>
+
+      <div class="pinned-task-title">
+        {{ pendingTask()?.title }}
+      </div>
+      <div class="pinned-task-q">
+        {{ pendingTask()?.q }}
+      </div>
+
+      <div class="task-options-row">
+        <button
+          *ngFor="let opt of pendingTask()?.options"
+          (click)="svc.answerNeedsInputTask(pendingTask()!.id, opt)"
+          class="task-option-btn"
+          type="button"
+        >
+          {{ opt }}
+        </button>
+      </div>
+
+      <div class="task-custom-row">
+        <input
+          [(ngModel)]="taskReplyText"
+          placeholder="Or write a customized response..."
+          (keydown.enter)="submitCustomTaskReply()"
+          class="task-custom-input"
+        />
+        <button
+          (click)="submitCustomTaskReply()"
+          class="task-submit-btn"
+          type="button"
+        >
+          Submit
+        </button>
+      </div>
+    </div>
+
+    <div class="messages-scroll-area">
+      <div
+        *ngFor="let msg of channelMessages()"
+        [class.is-self]="msg.isSelf"
+        class="message-wrapper"
+      >
+
+        <div *ngIf="!msg.isSelf" class="message-meta-row">
+          <span class="sender-avatar">{{ msg.senderAvatar }}</span>
+          <span class="sender-name">{{ msg.senderName }}</span>
+          <span *ngIf="msg.senderRole" class="sender-role-pill">
+            {{ msg.senderRole }}
+          </span>
+          <span class="message-time">{{ msg.time }}</span>
+        </div>
+
+        <div [class.self-bubble]="msg.isSelf" class="message-bubble">
+          {{ msg.text }}
+        </div>
+
+        <span *ngIf="msg.isSelf" class="self-time-label">
+          {{ msg.time }} · Arvind Rajan
+        </span>
+      </div>
+    </div>
+
+    <div class="chat-composer-bar">
+      <input
+        [(ngModel)]="chatInput"
+        placeholder="Type your message in #{{ activeChannel()?.name || svc.activeChannelSlug() }}..."
+        (keydown.enter)="sendMessage()"
+        class="composer-input"
+      />
+      <button
+        (click)="sendMessage()"
+        class="composer-send-btn"
+        title="Send Message"
+        type="button"
+      >
+        <i class="ti ti-send"></i>
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="isGiveKudosOpen" class="ios-overlay" (click)="isGiveKudosOpen = false">
+    <div class="modal-dialog-card" (click)="$event.stopPropagation()">
+      <div class="modal-dialog-header">
+        <div class="mdh-title-row">
+          <span style="font-size:20px">🌟</span>
+          <span class="mdh-title">Award Kudos to Teammate</span>
+        </div>
+        <button (click)="isGiveKudosOpen = false" class="mdh-close-btn" type="button">✕</button>
+      </div>
+
+      <div class="modal-form-body">
+        <div class="form-group">
+          <label class="form-label">Teammate Name</label>
+          <select [(ngModel)]="newKudosTo" class="form-input">
+            <option value="Sunita Rao (Manager)">Sunita Rao (Manager)</option>
+            <option value="Priya Krishnan (Senior)">Priya Krishnan (Senior)</option>
+            <option value="Raju Kumar (Agent)">Raju Kumar (Agent)</option>
+            <option value="Call Centre Team">Entire Call Centre Shift</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Recognition Badge</label>
+          <select [(ngModel)]="newKudosBadge" class="form-input">
+            <option value="🌟 Top Performer">🌟 Top Performer</option>
+            <option value="🔥 100% SLA Record">🔥 100% SLA Record</option>
+            <option value="🎯 Coached Move Master">🎯 Coached Move Master</option>
+            <option value="💡 Objection Handling Star">💡 Objection Handling Star</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Points to Award</label>
+          <select [(ngModel)]="newKudosPoints" class="form-input">
+            <option [value]="100">+100 Bonus Points</option>
+            <option [value]="250">+250 Bonus Points</option>
+            <option [value]="500">+500 Bonus Points</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Recognition Message</label>
+          <textarea
+            [(ngModel)]="newKudosText"
+            rows="3"
+            placeholder="e.g. Handled tough pricing objection with grace and closed the deal!"
+            class="form-input"
+          ></textarea>
+        </div>
+      </div>
+
+      <div class="modal-dialog-footer">
+        <button (click)="isGiveKudosOpen = false" class="modal-btn-cancel" type="button">Cancel</button>
+        <button (click)="saveNewKudos()" class="modal-btn-save" type="button">Award Kudos</button>
+      </div>
+    </div>
+  </div>
+</div>

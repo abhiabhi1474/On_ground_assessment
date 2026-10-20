@@ -1,0 +1,236 @@
+<div
+  *ngIf="svc.isScoreDetailOpen()"
+  class="ios-overlay show"
+  (click)="svc.closeScoreModal()"
+>
+
+  <div
+    class="ios-sheet og-score-sheet"
+    (click)="$event.stopPropagation()"
+  >
+
+    <div class="ios-sheet-handle"></div>
+
+    <button
+      class="sheet-close-btn"
+      (click)="svc.closeScoreModal()"
+      type="button"
+      title="Close"
+    >
+      ✕
+    </button>
+
+    <div class="ios-sheet-inner">
+
+      <div class="sheet-view-toggle">
+        <button
+          type="button"
+          class="sheet-toggle-btn"
+          [class.active]="currentView === 'score'"
+          (click)="currentView = 'score'"
+        >
+          OG Score™
+        </button>
+        <button
+          type="button"
+          class="sheet-toggle-btn"
+          [class.active]="currentView === 'rank'"
+          (click)="currentView = 'rank'"
+        >
+          Your Rank (#3)
+        </button>
+      </div>
+
+      <div *ngIf="currentView === 'score'" class="sheet-content-fade">
+
+        <div class="og-hero">
+          <div class="og-hero-tag">OG SCORE™</div>
+          <div class="og-ring lg" style="--pct:76;--ring-color:#1d9e75">
+            <span class="og-ring-val">76<span class="og-ring-sub">/ 100</span></span>
+          </div>
+          <div class="og-hero-delta">▲ +13 since period start</div>
+          <div class="og-hero-percentile">72nd percentile across all staff</div>
+        </div>
+
+        <div class="og-radar-wrap">
+          <svg viewBox="0 0 320 180" class="radar-svg" preserveAspectRatio="xMidYMid meet">
+
+            <polygon
+              points="160,82 171.3,88.5 171.3,101.5 160,108 148.7,101.5 148.7,88.5"
+              fill="none"
+              stroke="#e5e7eb"
+              stroke-width="1"
+            />
+            <polygon
+              points="160,69 182.5,82 182.5,108 160,121 137.5,108 137.5,82"
+              fill="none"
+              stroke="#e5e7eb"
+              stroke-width="1"
+            />
+            <polygon
+              points="160,56 193.8,75.5 193.8,114.5 160,134 126.2,114.5 126.2,75.5"
+              fill="none"
+              stroke="#e5e7eb"
+              stroke-width="1"
+            />
+            <polygon
+              points="160,43 205.0,69 205.0,121 160,147 115.0,121 115.0,69"
+              fill="none"
+              stroke="#e5e7eb"
+              stroke-width="1"
+            />
+
+            <line x1="160" y1="95" x2="160" y2="43" stroke="#e5e7eb" stroke-width="1" />
+            <line x1="160" y1="95" x2="205.0" y2="69" stroke="#e5e7eb" stroke-width="1" />
+            <line x1="160" y1="95" x2="205.0" y2="121" stroke="#e5e7eb" stroke-width="1" />
+            <line x1="160" y1="95" x2="160" y2="147" stroke="#e5e7eb" stroke-width="1" />
+            <line x1="160" y1="95" x2="115.0" y2="121" stroke="#e5e7eb" stroke-width="1" />
+            <line x1="160" y1="95" x2="115.0" y2="69" stroke="#e5e7eb" stroke-width="1" />
+
+            <polygon
+              points="160,49.2 196.9,73.7 195.1,115.3 160,131.9 130.7,111.9 133.9,79.9"
+              fill="rgba(29, 158, 117, 0.18)"
+              stroke="#1d9e75"
+              stroke-width="2"
+            />
+
+            <circle cx="160" cy="49.2" r="3.5" fill="#1d9e75" />
+            <circle cx="196.9" cy="73.7" r="3.5" fill="#1d9e75" />
+            <circle cx="195.1" cy="115.3" r="3.5" fill="#1d9e75" />
+            <circle cx="160" cy="131.9" r="3.5" fill="#1d9e75" />
+            <circle cx="130.7" cy="111.9" r="3.5" fill="#1d9e75" />
+            <circle cx="133.9" cy="79.9" r="3.5" fill="#1d9e75" />
+
+            <text x="160" y="28" text-anchor="middle" class="radar-label">Follow-up</text>
+            <text x="212" y="70" text-anchor="start" class="radar-label">Greeting</text>
+            <text x="212" y="125" text-anchor="start" class="radar-label">Product Knowledge</text>
+            <text x="160" y="166" text-anchor="middle" class="radar-label">Warranty</text>
+            <text x="108" y="125" text-anchor="end" class="radar-label">Objections</text>
+            <text x="108" y="70" text-anchor="end" class="radar-label">Closing</text>
+          </svg>
+        </div>
+
+        <div class="og-critical-box">
+          <div style="display:flex;align-items:center;gap:8px">
+            <span style="font-size:16px;color:#c8860a;flex-shrink:0">🔥</span>
+            <span style="font-size:13.5px;color:#7c4a00;line-height:1.4">
+              <b style="color:#5c3a00">Top 28%</b> on OG Score™ · +5pts unlocks <b style="color:#5c3a00">+4% earning potential</b>
+            </span>
+          </div>
+          <div class="og-percentile-track">
+            <div class="og-percentile-marker" style="left:72%"></div>
+          </div>
+          <div style="font-size:12.5px;color:#8a6d3d;margin-top:5px;line-height:1.4">
+            This is why OG Score™ matters — it's the single number most closely tied to your earning potential. Keep an eye on it every week.
+          </div>
+        </div>
+
+        <div class="og-improve-box">
+          <div class="og-improve-title">
+            <i class="ti ti-bulb"></i>
+            <span>Your biggest lever right now</span>
+          </div>
+          <div class="og-improve-item">
+            🔴 <b>Closing (58)</b> — great rapport, but the ask for the sale often doesn't happen.
+          </div>
+          <div class="og-improve-item">
+            🟠 <b>Objections (65)</b> — EMI/price pushback stalls more than it resolves.
+          </div>
+        </div>
+
+        <button
+          class="og-training-btn"
+          (click)="goToCoaching()"
+          type="button"
+        >
+          <i class="ti ti-school"></i>
+          <span>Practise these 2 skills →</span>
+        </button>
+
+        <button
+          class="og-training-btn og-linkedin-btn"
+          (click)="openLinkedInModal()"
+          type="button"
+        >
+          <i class="ti ti-brand-linkedin"></i>
+          <span>Announce this on LinkedIn</span>
+        </button>
+      </div>
+
+      <div *ngIf="currentView === 'rank'" class="sheet-content-fade">
+        <div class="rank-hero-wrap">
+          <div class="rh-eyebrow">YOUR RANK</div>
+          <div class="rh-number">#3</div>
+          <div class="rh-store">within <b>RT Nagar</b> · 6 staff ranked</div>
+        </div>
+
+        <div class="rh-info-banner">
+          Your rank is a weighted blend of the same numbers in <b>My Progress</b> — not just one metric. Here's exactly how it adds up this period:
+        </div>
+
+        <div class="rank-weights-wrap">
+          <div *ngFor="let item of rankWeights" class="rank-weight-item">
+            <div class="rwi-header">
+              <span class="rwi-name">
+                <span class="rwi-icon">{{ item.icon }}</span>
+                <span>{{ item.label }}</span>
+              </span>
+              <span class="rwi-meta">
+                <b>{{ item.displayVal }}</b> · {{ item.weight }}% weight
+              </span>
+            </div>
+            <div class="rwi-bar-track">
+              <div class="rwi-bar-fill" [style.width.%]="item.pct"></div>
+            </div>
+          </div>
+
+          <div class="composite-total-box">
+            <span class="ctb-label">Composite score</span>
+            <span class="ctb-val">78.4 / 100</span>
+          </div>
+        </div>
+
+        <div class="rank-tip-dark">
+          <div style="display:flex;align-items:flex-start;gap:8px">
+            <i class="ti ti-bulb" style="font-size:16px;color:#FFD700;flex-shrink:0;margin-top:2px"></i>
+            <span style="font-size:13px;line-height:1.5">
+              Closing 1 more lead this week would add ~4 points — enough to pass #2. <b>Leads Called</b> is your fastest lever right now.
+            </span>
+          </div>
+        </div>
+
+        <div class="rank-footer-sub">
+          Weights are store defaults, set by your manager under Settings → Customer Interaction preferences.
+        </div>
+      </div>
+
+      <div *ngIf="currentView === 'linkedin'" class="sheet-content-fade">
+        <div class="linkedin-preview-box">
+          <div class="li-box-header">
+            <i class="ti ti-brand-linkedin" style="font-size:24px;color:#0a66c2"></i>
+            <div style="font-size:16px;font-weight:700;color:#1a1a1a">Share your OG Score™ milestone</div>
+          </div>
+          <div class="li-post-quote">
+            Hit a new OG Score™ milestone this month — <b>76 and climbing</b> 🚀 Proud of the growth, especially in closing and handling objections with more confidence. Onward and upward! #Sales #GrowthMindset #OnGroundAI
+          </div>
+          <div class="li-post-account">
+            Posts to <b>Arvind Rajan</b>'s LinkedIn profile (The Sleep Company)
+          </div>
+          <button
+            class="li-submit-btn"
+            (click)="confirmLinkedInPost()"
+            type="button"
+            [disabled]="isPostSuccess"
+          >
+            <i class="ti ti-brand-linkedin"></i>
+            <span>{{ isPostSuccess ? '✓ Posted to LinkedIn!' : 'Post to LinkedIn' }}</span>
+          </button>
+          <div *ngIf="isPostSuccess" class="li-toast-success">
+            🎉 Your OG Score™ milestone is live on your profile.
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

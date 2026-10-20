@@ -1,0 +1,95 @@
+<div
+  *ngIf="svc.isNotificationPanelOpen()"
+  class="ios-overlay notif-overlay"
+  (click)="svc.isNotificationPanelOpen.set(false)"
+>
+  <div class="modal-dialog-card notif-panel-card" (click)="$event.stopPropagation()">
+
+    <div class="notif-header">
+      <div class="notif-header-left">
+        <div class="notif-bell-icon">
+          <i class="ti ti-bell"></i>
+        </div>
+        <div>
+          <div class="notif-header-title">Notifications</div>
+          <div class="notif-header-sub">
+            {{ actionCount() }} need action · {{ alertCount() }} alerts
+          </div>
+        </div>
+      </div>
+      <button
+        (click)="svc.isNotificationPanelOpen.set(false)"
+        class="notif-close-btn"
+        type="button"
+        title="Close"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="notif-tabs-bar">
+      <button
+        (click)="filter = 'all'"
+        [class.active]="filter === 'all'"
+        class="notif-tab-btn"
+        type="button"
+      >
+        All ({{ notifications.length }})
+      </button>
+      <button
+        (click)="filter = 'action'"
+        [class.active]="filter === 'action'"
+        class="notif-tab-btn"
+        type="button"
+      >
+        Needs Action ({{ actionCount() }})
+      </button>
+      <button
+        (click)="filter = 'alert'"
+        [class.active]="filter === 'alert'"
+        class="notif-tab-btn"
+        type="button"
+      >
+        Alerts ({{ alertCount() }})
+      </button>
+    </div>
+
+    <div class="notif-list-body">
+      <div
+        *ngFor="let notif of filteredNotifications()"
+        (click)="handleNotifClick(notif)"
+        class="notif-item"
+        [class.needs-action]="notif.needsAction"
+      >
+        <div class="notif-icon-circle" [style.background]="notif.iconBg">
+          {{ notif.icon }}
+        </div>
+        <div class="notif-item-content">
+          <div class="notif-item-top">
+            <span class="notif-item-title">{{ notif.title }}</span>
+            <span class="notif-item-time">{{ notif.time }}</span>
+          </div>
+          <div class="notif-item-body">{{ notif.body }}</div>
+          <div *ngIf="notif.actionLabel" class="notif-action-pill">
+            <span>{{ notif.actionLabel }}</span>
+            <i class="ti ti-arrow-right"></i>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="filteredNotifications().length === 0" class="notif-empty">
+        <i class="ti ti-bell-off" style="font-size:32px;color:#cbd5e1;margin-bottom:6px"></i>
+        <div>No notifications in this filter</div>
+      </div>
+    </div>
+
+    <div class="notif-footer">
+      <button (click)="markAllAsRead()" class="notif-mark-read-btn" type="button">
+        Mark all as read
+      </button>
+      <button (click)="svc.isNotificationPanelOpen.set(false)" class="notif-done-btn" type="button">
+        Done
+      </button>
+    </div>
+  </div>
+</div>

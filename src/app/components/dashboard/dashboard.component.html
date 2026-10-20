@@ -1,0 +1,164 @@
+<div class="sc active" id="asc-dash">
+
+  <div class="cc-hero">
+    <div class="cc-hero-top">
+      <div>
+        <div class="cc-greeting">Good afternoon 👋</div>
+        <div class="cc-name">{{ svc.userProfile().name }}</div>
+        <div class="cc-sub" id="ccBrandLine">{{ svc.userProfile().store }}</div>
+      </div>
+      <div class="hero-actions">
+        <div class="cc-status-pill"><span class="cc-live-dot"></span>On Queue</div>
+        <button class="date-filter" (click)="svc.isDateRangeModalOpen.set(true)" title="Filter date range">
+          <i class="ti ti-calendar"></i>
+          <span>{{ svc.dateFilterLabel() }}</span>
+          <i class="ti ti-chevron-down"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="cc-kpi-row">
+      <div class="cc-kpi" (click)="svc.isScoreDetailOpen.set(true)" title="View OG Score™ details">
+        <div class="cc-kpi-val">{{ svc.userProfile().ogScore }}</div>
+        <div class="cc-kpi-lbl">OG SCORE™</div>
+        <div class="cc-kpi-trend up">▲13</div>
+      </div>
+      <div class="cc-kpi">
+        <div class="cc-kpi-val">4m 12s</div>
+        <div class="cc-kpi-lbl">AVG HANDLE TIME</div>
+        <div class="cc-kpi-trend up">▼8%</div>
+      </div>
+      <div class="cc-kpi">
+        <div class="cc-kpi-val">94%</div>
+        <div class="cc-kpi-lbl">CSAT TODAY</div>
+        <div class="cc-kpi-trend up">▲2pt</div>
+      </div>
+      <div class="cc-kpi" (click)="svc.switchTab('calls')" title="Open calling queue">
+        <div class="cc-kpi-val">{{ svc.waitingLeads().length }}</div>
+        <div class="cc-kpi-lbl">IN QUEUE</div>
+        <div class="cc-kpi-trend live">● live</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dash-grid-responsive">
+
+    <div class="dash-col">
+
+      <div class="prog-banner">
+        <div class="prog-eyebrow">
+          <i class="ti ti-flame" style="color:#5dcaa5"></i>
+          <span>My Progress · Today</span>
+        </div>
+        <div class="prog-grid">
+          <div class="prog-stat">
+            <div class="ps-val">3</div>
+            <div class="ps-delta">▲ +1</div>
+            <div class="ps-lbl">Leads Created</div>
+          </div>
+          <div class="prog-stat">
+            <div class="ps-val">2</div>
+            <div class="ps-delta">▲ +2</div>
+            <div class="ps-lbl">Leads Called</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="waiting-card">
+        <div class="waiting-header">
+          <span class="waiting-title">WHO'S WAITING ({{ svc.waitingLeads().length }})</span>
+          <button class="open-planner-btn" (click)="svc.switchTab('calls')">Open planner →</button>
+        </div>
+        <div class="waiting-list">
+          <div *ngFor="let lead of svc.waitingLeads()" class="waiting-item">
+            <div class="waiting-item-info">
+              <div class="waiting-name-row">
+                <span class="lead-name">{{ lead.name }}</span>
+                <span class="intent-pill">🎯 Intent {{ lead.intent }}</span>
+              </div>
+              <div class="waiting-reason">{{ lead.reason }}</div>
+              <div class="waiting-meta">₹{{ lead.value | number }} at stake · {{ lead.waitTime }} waiting</div>
+            </div>
+            <button class="call-btn-pill" (click)="callLead(lead)" title="Call {{ lead.name }}">
+              <i class="ti ti-phone"></i>
+              <span>Call</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <span>CALLS HANDLED · LAST 7 DAYS</span>
+        </div>
+        <div class="chart-bars">
+          <div *ngFor="let item of callsChartData" class="chart-col">
+            <div class="bar-num">{{ item.val }}</div>
+            <div class="bar-track">
+              <div class="bar-fill" [style.height.%]="item.pct"></div>
+            </div>
+            <div class="bar-day">{{ item.day }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="dash-col">
+
+      <div class="earnings-card">
+        <div class="earnings-header">
+          <div class="eh-left">
+            <span>🔥</span>
+            <b>My earnings this month</b>
+          </div>
+          <span class="eh-slab">₹800 to ₹6,000 slab</span>
+        </div>
+        <div class="earnings-amount">
+          <span class="amt-big">₹{{ svc.userProfile().earningsThisMonth | number }}</span>
+          <span class="amt-sub">₹{{ svc.userProfile().coachedEarnings | number }} from coached moves</span>
+        </div>
+        <div class="earnings-progress-track">
+          <div class="earnings-progress-bar" style="width: 86%;"></div>
+        </div>
+      </div>
+
+      <div class="tasks-card">
+        <div class="tasks-header">
+          <span>👨‍💼</span>
+          <b>My Tasks</b>
+          <span class="tasks-badge">3</span>
+        </div>
+        <div class="task-row" (click)="onTaskClick('callback')">
+          <div class="task-icon"><i class="ti ti-phone-incoming"></i></div>
+          <div class="task-body"><b>2 callbacks</b> next 4:30pm</div>
+          <i class="ti ti-chevron-right task-arr"></i>
+        </div>
+        <div class="task-row" (click)="svc.openLeadsModal(0)">
+          <div class="task-icon purple"><i class="ti ti-users"></i></div>
+          <div class="task-body"><b>2 hot leads</b> untouched 24h · View Cards →</div>
+          <i class="ti ti-chevron-right task-arr"></i>
+        </div>
+        <div class="task-row" (click)="onTaskClick('outcome')">
+          <div class="task-icon orange"><i class="ti ti-notes"></i></div>
+          <div class="task-body"><b>1 outcome</b> to log</div>
+          <i class="ti ti-chevron-right task-arr"></i>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <span>CSAT TREND · LAST 7 DAYS</span>
+        </div>
+        <div class="chart-bars">
+          <div *ngFor="let item of csatChartData" class="chart-col">
+            <div class="bar-num">{{ item.val }}%</div>
+            <div class="bar-track csat">
+              <div class="bar-fill csat" [style.height.%]="item.pct"></div>
+            </div>
+            <div class="bar-day">{{ item.day }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

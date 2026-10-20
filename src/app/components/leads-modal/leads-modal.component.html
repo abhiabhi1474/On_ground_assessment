@@ -1,0 +1,191 @@
+<div
+  *ngIf="svc.isLeadsModalOpen()"
+  class="ios-overlay leads-overlay"
+  id="leadsOverlay"
+  (click)="svc.closeLeadsModal()"
+>
+  <div class="leads-modal-card" (click)="$event.stopPropagation()">
+
+    <div class="leads-modal-header">
+      <i class="ti ti-users leads-header-icon"></i>
+      <div class="leads-header-titles">
+        <div class="lmh-title">Leads Card</div>
+        <div class="lmh-sub">
+          Lead {{ svc.activeLeadsModalIdx() + 1 }} of {{ svc.leads().length }} · SLA to close
+        </div>
+      </div>
+      <button
+        (click)="svc.closeLeadsModal()"
+        title="Close"
+        class="lmh-close-btn"
+        type="button"
+      >
+        ✕
+      </button>
+    </div>
+
+    <div class="leads-pager-bar">
+      <button
+        (click)="svc.prevLead()"
+        [disabled]="svc.activeLeadsModalIdx() === 0"
+        class="leads-pager-btn"
+        type="button"
+      >
+        ‹
+      </button>
+
+      <div class="leads-dots-container">
+        <span
+          *ngFor="let l of svc.leads(); let i = index"
+          [class.active]="i === svc.activeLeadsModalIdx()"
+          class="lead-nav-dot"
+        ></span>
+      </div>
+
+      <button
+        (click)="svc.nextLead()"
+        [disabled]="svc.activeLeadsModalIdx() === svc.leads().length - 1"
+        class="leads-pager-btn"
+        type="button"
+      >
+        ›
+      </button>
+    </div>
+
+    <div *ngIf="currentLead()" class="leads-body-scroll">
+
+      <div class="lead-id-card">
+        <div class="lead-id-top">
+          <div>
+            <div class="lead-main-name">{{ currentLead()!.name }}</div>
+            <div class="lead-phone-store">
+              {{ currentLead()!.phone }} · {{ currentLead()!.store }}
+            </div>
+          </div>
+          <div class="lead-value-box">
+            <div class="lead-val-amt">₹{{ currentLead()!.value | number }}</div>
+            <div class="lead-sla-badge">
+              {{ currentLead()!.sla }}
+            </div>
+          </div>
+        </div>
+
+        <div class="lead-scores-grid">
+          <div class="score-card icp">
+            <div class="score-number icp">{{ currentLead()!.icpScore }}%</div>
+            <div class="score-label icp">ICP Match Score</div>
+          </div>
+          <div class="score-card intent">
+            <div class="score-number intent">{{ currentLead()!.intentScore }}%</div>
+            <div class="score-label intent">Lead Intent Score</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="breakdown-card">
+        <div class="breakdown-title">
+          ICP Fit Breakdown
+        </div>
+        <div *ngFor="let s of currentLead()!.subscores" class="subscore-item">
+          <div class="subscore-row">
+            <span class="subscore-label">{{ s.label }}</span>
+            <span class="subscore-val" [style.color]="s.color">{{ s.pct }}%</span>
+          </div>
+          <div class="subscore-track">
+            <div class="subscore-fill" [style.width.%]="s.pct" [style.background]="s.color"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="signals-card">
+        <div
+          (click)="isBuyingSignalsOpen = !isBuyingSignalsOpen"
+          class="signals-toggle-header"
+        >
+          <div class="signals-title-left">
+            <i class="ti ti-flame signals-fire-icon"></i>
+            <span class="signals-header-text">Detected Buying Signals</span>
+          </div>
+          <i
+            class="ti ti-chevron-down"
+            [style.transform]="isBuyingSignalsOpen ? 'rotate(180deg)' : 'none'"
+            style="transition:transform .2s"
+          ></i>
+        </div>
+
+        <div *ngIf="isBuyingSignalsOpen" class="signals-items-list">
+          <div
+            *ngFor="let pb of currentLead()!.problemBuckets"
+            class="signal-card-box"
+          >
+            <div class="signal-card-cat">
+              <i class="ti ti-tag" style="margin-right:4px"></i>{{ pb.cat }}
+            </div>
+            <div class="signal-card-quote">
+              "{{ pb.text }}"
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="journey-card">
+        <div class="journey-title">
+          Customer Journey
+        </div>
+        <div class="journey-timeline">
+          <div
+            *ngFor="let ev of currentLead()!.journey"
+            class="journey-step"
+          >
+            <span class="journey-step-icon">{{ ev.icon }}</span>
+            <div class="journey-step-text">
+              <div class="journey-step-meta">
+                {{ ev.date }} · <span>{{ ev.channel }}</span>
+              </div>
+              <div class="journey-step-desc">
+                {{ ev.text }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="lead-modal-actions">
+        <button
+          (click)="callLeadFromModal()"
+          class="lm-action-btn in-app"
+          type="button"
+        >
+          <i class="ti ti-phone"></i>
+          <span>In-app call</span>
+        </button>
+        <button
+          (click)="phoneCallDirect()"
+          class="lm-action-btn direct"
+          type="button"
+        >
+          <i class="ti ti-device-mobile"></i>
+          <span>Phone call</span>
+        </button>
+        <button
+          (click)="openWhatsApp()"
+          class="lm-action-btn wa"
+          type="button"
+        >
+          <i class="ti ti-brand-whatsapp"></i>
+          <span>WhatsApp</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="leads-modal-footer">
+      <div class="missed-summary">
+        <span class="missed-dot"></span>
+        Cumulative Missed: 2
+        <span class="missed-sub">
+          · expired without close, visible to manager
+        </span>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<header class="topbar">
+
+  <div class="topbar-brand" (click)="svc.switchTab('dash')" title="On-Ground.ai — Call Centre Home">
+    <div class="brand-logo">OG</div>
+    <span class="brand-name">On-Ground.ai</span>
+  </div>
+
+  <div class="demo-trigger-pill">
+    <button class="call-demo-btn" (click)="triggerDemoCall()" title="Launch practice AI roleplay call">
+      <i class="ti ti-phone-outgoing"></i>
+      <span>Practice Call</span>
+    </button>
+    <button class="incoming-demo-btn" (click)="svc.triggerIncomingCallSimulation()" title="Simulate incoming customer call">
+      <i class="ti ti-phone-incoming"></i>
+      <span>Simulate Incoming</span>
+    </button>
+  </div>
+
+  <div class="topbar-right">
+
+    <button
+      class="notif-bell"
+      (click)="svc.isNotificationPanelOpen.set(!svc.isNotificationPanelOpen())"
+      title="View Alerts & Notifications"
+      type="button"
+    >
+      <i class="ti ti-bell"></i>
+      <span id="notifBellDot" class="notif-dot"></span>
+    </button>
+
+    <div class="global-ranks">
+      <div
+        class="grank-pill gold"
+        (click)="openScoreOrRank('score')"
+        title="View OG Score™ and Rank Breakdown"
+        role="button"
+        tabindex="0"
+      >
+        <div
+          class="og-ring sm"
+          style="--pct:76;--ring-color:#1d9e75"
+          (click)="openScoreOrRank('score'); $event.stopPropagation()"
+          title="OG Score™ — 76 / 100"
+        >
+          <span class="og-ring-val">{{ svc.userProfile().ogScore }}</span>
+        </div>
+        <span
+          class="gr-num"
+          (click)="openScoreOrRank('rank'); $event.stopPropagation()"
+          title="Your Rank within RT Nagar: #3"
+        >
+          ⭐#{{ svc.userProfile().rank }}
+        </span>
+      </div>
+    </div>
+
+    <div
+      class="ar-badge"
+      (click)="svc.isUserDropdownOpen.set(!svc.isUserDropdownOpen())"
+      title="Arvind Rajan · Call Centre Profile"
+      tabindex="0"
+    >
+      <div class="ar-badge-ring"></div>
+      <div class="ar-badge-inner">
+        <span class="ar-badge-emoji">{{ svc.userProfile().avatar }}</span>
+        <span class="ar-badge-initials">{{ svc.userProfile().initials }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="svc.isUserDropdownOpen()" class="dropdown-backdrop" (click)="svc.isUserDropdownOpen.set(false)"></div>
+    <div class="user-dropdown" [class.open]="svc.isUserDropdownOpen()">
+      <div class="dd-header">
+        <div class="dd-av">{{ svc.userProfile().avatar }}</div>
+        <div>
+          <div class="dd-name">{{ svc.userProfile().name }}</div>
+          <div class="dd-store">{{ svc.userProfile().store }}</div>
+        </div>
+      </div>
+      <div class="dd-item" (click)="svc.openLeadsModal(0); svc.isUserDropdownOpen.set(false)">
+        <i class="ti ti-users"></i>
+        <span>My Allocated Leads</span>
+      </div>
+      <div class="dd-item" (click)="svc.switchTab('pulse'); svc.isUserDropdownOpen.set(false)">
+        <i class="ti ti-messages"></i>
+        <span>Ask Avani AI Coach</span>
+      </div>
+      <div class="dd-item" (click)="svc.switchTab('calendar'); svc.isUserDropdownOpen.set(false)">
+        <i class="ti ti-calendar"></i>
+        <span>My Shift Calendar</span>
+      </div>
+      <div class="dd-item" (click)="svc.isScoreDetailOpen.set(true); svc.isUserDropdownOpen.set(false)">
+        <i class="ti ti-checklist"></i>
+        <span>Score & Rank Breakdown</span>
+      </div>
+      <div class="dd-item danger" (click)="svc.isUserDropdownOpen.set(false)">
+        <i class="ti ti-power"></i>
+        <span>End Shift / Break</span>
+      </div>
+    </div>
+  </div>
+</header>

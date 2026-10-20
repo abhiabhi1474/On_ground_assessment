@@ -1,0 +1,238 @@
+<div
+  *ngIf="audioCall.callSession().isActive"
+  class="ios-overlay active-calling-overlay"
+>
+  <div class="active-call-card">
+
+    <div class="call-card-header">
+      <div class="call-header-main">
+        <div class="call-contact-left">
+          <div
+            [class.call-pulse-active]="audioCall.callSession().status === 'connected'"
+            class="call-avatar-icon"
+          >
+            📞
+          </div>
+          <div>
+            <div class="call-name-status">
+              <span class="call-contact-name">{{ audioCall.callSession().contactName }}</span>
+              <span
+                [class.connected]="audioCall.callSession().status === 'connected'"
+                [class.ringing]="audioCall.callSession().status !== 'connected'"
+                class="call-live-badge"
+              >
+                {{ audioCall.callSession().status === 'connected' ? '● LIVE CONNECTED' : 'RINGING...' }}
+              </span>
+            </div>
+            <div class="call-contact-meta">
+              {{ audioCall.callSession().phone }} · Value: ₹{{ (audioCall.callSession().leadValue || 45000) | number }}
+            </div>
+          </div>
+        </div>
+
+        <div class="call-timer-box">
+          <div class="call-time-val">
+            {{ audioCall.callSession().formattedDuration }}
+          </div>
+          <div class="call-mode-lbl">
+            {{ audioCall.callSession().mode === 'ai-roleplay' ? 'AI Roleplay' : 'Human Peer' }}
+          </div>
+        </div>
+      </div>
+
+      <div class="call-mode-bar">
+        <div class="mode-toggles">
+          <button
+            (click)="setMode('ai-roleplay')"
+            [class.active]="audioCall.callSession().mode === 'ai-roleplay'"
+            class="mode-btn ai"
+            type="button"
+          >
+            🤖 AI-to-Human Calling
+          </button>
+          <button
+            (click)="setMode('human-peer')"
+            [class.active]="audioCall.callSession().mode === 'human-peer'"
+            class="mode-btn human"
+            type="button"
+          >
+            👥 Human-to-Human Calling
+          </button>
+        </div>
+        <div class="rec-indicator">
+          <span class="rec-dot"></span>
+          <span>REC</span>
+        </div>
+      </div>
+
+      <div class="waveform-container">
+        <canvas #waveformCanvas class="waveform-canvas"></canvas>
+      </div>
+    </div>
+
+    <div class="call-card-body">
+
+      <div class="sentiment-meter-card">
+        <div class="sentiment-header">
+          <span class="sentiment-lbl">Customer Sentiment</span>
+          <span
+            [class.pos]="audioCall.callSession().sentiment === 'Positive'"
+            [class.obj]="audioCall.callSession().sentiment === 'Objection'"
+            [class.neu]="audioCall.callSession().sentiment === 'Neutral'"
+            class="sentiment-val"
+          >
+            {{ audioCall.callSession().sentiment }}
+          </span>
+        </div>
+        <div class="sentiment-track">
+          <div
+            [style.width.%]="audioCall.callSession().sentimentPct"
+            [class.bg-pos]="audioCall.callSession().sentiment === 'Positive'"
+            [class.bg-obj]="audioCall.callSession().sentiment === 'Objection'"
+            [class.bg-neu]="audioCall.callSession().sentiment === 'Neutral'"
+            class="sentiment-bar"
+          ></div>
+        </div>
+      </div>
+
+      <div class="coach-bubble-card">
+        <span class="coach-icon">💡</span>
+        <div class="coach-content">
+          <div class="coach-lbl">Avani AI Live Coach</div>
+          <div class="coach-tip">
+            {{ audioCall.callSession().aiCoachingTip }}
+          </div>
+        </div>
+      </div>
+
+      <div class="transcript-stream">
+        <div
+          *ngFor="let turn of audioCall.callSession().liveTranscript"
+          [class.speaker-agent]="turn.speaker === 'agent'"
+          [class.speaker-customer]="turn.speaker === 'customer'"
+          class="transcript-turn"
+        >
+          <div class="turn-speaker-label">
+            {{ turn.speaker === 'agent' ? 'You (Arvind)' : turn.speaker === 'customer' ? audioCall.callSession().contactName : 'System Coach' }} · {{ turn.time }}
+          </div>
+          <div class="turn-bubble">
+            {{ turn.text }}
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="audioCall.callSession().status === 'connected'" class="suggested-responses-card">
+        <div class="sugg-header">
+          Recommended Responses (Click to Speak & Pass SOP)
+        </div>
+        <div class="sugg-list">
+          <button
+            *ngFor="let suggestion of suggestedResponses()"
+            (click)="sendResponse(suggestion)"
+            class="sugg-btn"
+            type="button"
+          >
+            💬 {{ suggestion }}
+          </button>
+        </div>
+
+        <div class="custom-reply-row">
+          <input
+            [(ngModel)]="customAgentSpeech"
+            placeholder="Or speak/type customized reply..."
+            (keydown.enter)="sendCustomResponse()"
+            class="custom-reply-input"
+          />
+          <button
+            (click)="sendCustomResponse()"
+            class="custom-reply-btn"
+            type="button"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+
+      <div class="sop-scorecard-card">
+        <div class="sop-scorecard-header">
+          Live SOP Scorecard ({{ passedCount() }} / {{ audioCall.callSession().sopChecklist.length }} Complete)
+        </div>
+        <div class="sop-checklist-items">
+          <div
+            *ngFor="let item of audioCall.callSession().sopChecklist"
+            class="sop-check-row"
+          >
+            <span
+              [class.passed]="item.passed"
+              class="sop-item-lbl"
+            >
+              {{ item.label }}
+            </span>
+            <span
+              [class.badge-passed]="item.passed"
+              [class.badge-pending]="!item.passed"
+              class="sop-item-badge"
+            >
+              {{ item.passed ? 'PASSED ✓' : 'PENDING' }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="showKeypad" class="keypad-card">
+        <div class="keypad-grid">
+          <button
+            *ngFor="let k of keypadDigits"
+            (click)="pressKeypad(k)"
+            class="keypad-digit-btn"
+            type="button"
+          >
+            {{ k }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="call-card-footer">
+
+      <button
+        (click)="audioCall.toggleMute()"
+        [class.active-mute]="audioCall.callSession().isMuted"
+        class="ctrl-btn mute"
+        title="Mute microphone"
+        type="button"
+      >
+        <i [class]="audioCall.callSession().isMuted ? 'ti ti-microphone-off' : 'ti ti-microphone'"></i>
+      </button>
+
+      <button
+        (click)="audioCall.toggleHold()"
+        [class.active-hold]="audioCall.callSession().isOnHold"
+        class="ctrl-btn hold"
+        title="Hold call"
+        type="button"
+      >
+        <i class="ti ti-player-pause"></i>
+      </button>
+
+      <button
+        (click)="showKeypad = !showKeypad"
+        [class.active-keypad]="showKeypad"
+        class="ctrl-btn keypad"
+        title="DTMF dialpad"
+        type="button"
+      >
+        <i class="ti ti-dialpad"></i>
+      </button>
+
+      <button
+        (click)="endCallAndOpenWrapup()"
+        class="ctrl-btn hangup"
+        title="End Call & Open Wrap-up"
+        type="button"
+      >
+        <i class="ti ti-phone-off"></i>
+      </button>
+    </div>
+  </div>
+</div>
