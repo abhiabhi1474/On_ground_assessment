@@ -103,26 +103,3 @@ A high-performance, responsive Call Centre application built with **Angular (v21
 
 ---
 
-## 🎁 Bonus Items Completed
-
-- [x] **Send a message in a channel**: Working composer in `#all-staff` and all channels with instant thread addition.
-- [x] **Answer the "Needs your input" card**: Interactive buttons complete the task, update the counter, and automatically post the resolution to the channel.
-- [x] **Practice a call and Call back**: Practice Call button on topbar/dashboard, and Call Back button on every incoming call row.
-- [x] **Works on a phone-width screen**: Responsive CSS rules automatically adapt desktop sidebar to mobile bottom bar, adjust font sizes, and stack grids for screens under 768px.
-- [x] **Interactive 7-day Charts**: Visual bar charts for Calls Handled and CSAT Trend with hover states and percentage heights.
-
----
-
-## 🤖 AI Tools Disclosure
-
-In accordance with Ground Rules:
-- **Google Antigravity / Gemini 3.8 Flash (High)** was used as an AI pair-programming assistant to extract mock data structures, scaffold standalone Angular 21 components, and implement Web Audio API sound synthesis algorithms.
-- All code was reviewed, validated, and compiled locally with zero errors.
-
----
-
-## 📧 Submission Info
-
-- **Candidate**: Assignment Submission for Mukunda Dwarkanath (`mukunda@on-ground.ai`)
-- **Subject**: Assignment Submission: Arvind Rajan / Frontend Engineering Shortlist
-- **Deadline**: Tuesday, 20 October 2026, 10:00 AM IST
